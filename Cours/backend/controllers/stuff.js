@@ -15,9 +15,19 @@ exports.modifyThing = (req, res, next) => {
 }
 
 exports.DeleteThing = (req, res, next) => {
+    Thing.findOne({ _id: req.params.id })
+    .then((th) => {if(!th){
+        res.status(404).json({ error: new Error( 'Objet inexistant ')})
+    }
+    if(th.userId !== req.body.userId){
+        res.status(401).json({ error: new Error( 'Requete aunothorized ')});
+    }
     Thing.deleteOne({ _id : req.params.id})
     .then(thing => res.status(200).json({ message: 'Delete'}))
     .catch(e => res.status(400).json({ e }));
+})
+    
+   
 }
 
 exports.GetThings =(req, res, next) => {
